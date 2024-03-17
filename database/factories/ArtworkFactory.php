@@ -21,7 +21,7 @@ class ArtworkFactory extends Factory
         return [
             'title' => $this->faker->word(),
             'image_id' => Image::all()->random()->id,
-            'description' => $this->faker->text(400),
+            'description' => $this->faker->text(200),
             'classification_id' => Classification::all()->random()->id,
             'technique' => $this->faker->text(255),
             'details' => $this->faker->text(255),
