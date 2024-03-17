@@ -18,6 +18,7 @@ class ImageFactory extends Factory
     {
         return [
             'url' => $this->faker->imageUrl(),
+            'public_id' => $this->faker->uuid(),
         ];
     }
 }
