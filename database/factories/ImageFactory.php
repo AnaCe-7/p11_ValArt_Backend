@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class ImagesFactory extends Factory
+class ImageFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,7 +19,8 @@ class ImagesFactory extends Factory
         return [
             'image_url' => $this->faker->imageUrl,
             'public_id' => $this->faker->uuid,
-            'artwork_id' => \App\Models\Artwork::factory(),
+            // 'artwork_id' => \App\Models\Artwork::factory(),
+            'artwork_id' => \App\Models\Artwork::all()->random()->id,
         ];
     }
 }

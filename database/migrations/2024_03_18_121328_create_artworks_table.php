@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('artworks', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('description');
             $table->enum('classification', ['Pintura', 'Escultura', 'Dibujo', 'Artesanía', 'Grabado', 'Ceramica', 'Orfebreria']);
             $table->string('technique');
             $table->string('details');

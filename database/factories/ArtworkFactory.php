@@ -18,10 +18,11 @@ class ArtworkFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
+            'description' => $this->faker->text,
             'classification' => $this->faker->randomElement(['Pintura', 'Escultura', 'Dibujo', 'Artesanía', 'Grabado', 'Cerámica', 'Orfebrería']),
-            'technique' => $this->faker->word,
+            'technique' => $this->faker->sentence,
             'details' => $this->faker->text,
-            'measures' => $this->faker->word,
+            'measures' => $this->faker->sentence,
         ];
     }
 }
