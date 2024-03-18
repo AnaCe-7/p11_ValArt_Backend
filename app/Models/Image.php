@@ -11,8 +11,8 @@ class Image extends Model
 
     protected $guarded =  [];
 
-    public function Artwork()
+    public function artwork()
     {
-        return $this->hasMany(Artwork::class);
+        return $this->belongsTo(Artwork::class);
     }
 }

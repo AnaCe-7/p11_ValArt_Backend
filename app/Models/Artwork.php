@@ -13,7 +13,7 @@ class Artwork extends Model
 
     public function image()
     {
-        return $this->belongsTo(Image::class);
+        return $this->hasMany(Image::class);
     }
 
 }
