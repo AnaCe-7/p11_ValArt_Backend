@@ -16,8 +16,4 @@ class Artwork extends Model
         return $this->belongsTo(Image::class);
     }
 
-    public function classification()
-    {
-        return $this->hasMany(Classification::class);
-    }
 }
