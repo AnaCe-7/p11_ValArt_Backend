@@ -12,6 +12,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $this->call([
+            ArtworkSeeder::class,
+            ImageSeeder::class,
+        ]);
     }
 }
