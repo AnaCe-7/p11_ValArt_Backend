@@ -49,5 +49,28 @@ class ArtworkController extends Controller
             return response()->json($artwork, 200);
     }
 
-    
+
+    public function update(Request $request, string $id)
+    {
+        try {
+            $artwork = Artwork::find($id);
+            $artwork -> title = $request -> title;
+            $artwork -> description = $request -> description;
+            $artwork -> image = $request -> image;
+            $artwork -> classification = $request -> classification;
+            $artwork -> technique = $request -> technique;
+            $artwork -> details = $request -> details;
+            $artwork -> measures = $request -> measures;
+            $artwork->save();
+
+        return response()->json([
+            'success' => true,
+            'data' => $artwork
+        ], 200);
+
+        }  catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update artwork'], 500);
+        }
+    }
+
 }
