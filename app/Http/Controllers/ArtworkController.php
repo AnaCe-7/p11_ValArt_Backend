@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ArtworkController extends Controller
 {
-    // Mostrar todos los Artworks
+    
     public function index()
     {
         $artworks = Artwork::all();
@@ -72,5 +72,21 @@ class ArtworkController extends Controller
             return response()->json(['error' => 'Failed to update artwork'], 500);
         }
     }
+
+    public function destroy(string $id)
+    {
+        try {
+            $artwork = Artwork::find($id);
+            if (!$artwork) {
+                return response()->json(['error' => 'Artwork not found'], 404);
+            }
+            $artwork->delete();
+            return response()->json([
+                'success' => true
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete artwork'], 500);
+        }
+    } 
 
 }
