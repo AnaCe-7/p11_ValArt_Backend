@@ -38,4 +38,16 @@ class ArtworkController extends Controller
             }
     }
 
+
+    public function show(string $id)
+    {
+        $artwork = Artwork::find($id);
+
+        if (!$artwork) {
+            return response()->json(['error' => 'Artwork not found'], 404);
+        }
+            return response()->json($artwork, 200);
+    }
+
+    
 }
