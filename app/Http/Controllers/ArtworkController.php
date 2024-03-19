@@ -4,24 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Artwork;
 use Illuminate\Http\Request;
+use App\Http\Requests\ArtworkRequest;
+use Illuminate\Http\JsonResponse;
 
 class ArtworkController extends Controller
 {
     
-    public function index()
+    public function index():JsonResponse
     {
         $artworks = Artwork::all();
         return response()->json($artworks, 200);
     }
 
-    public function store(Request $request)
+    public function store(ArtworkRequest $request):JsonResponse
     {
         try {
 
             $artwork = new Artwork;
             $artwork -> title = $request -> title;
             $artwork -> description = $request -> description;
-            $artwork -> image = $request -> image;
             $artwork -> classification = $request -> classification;
             $artwork -> technique = $request -> technique;
             $artwork -> details = $request -> details;
@@ -39,7 +40,7 @@ class ArtworkController extends Controller
     }
 
 
-    public function show(string $id)
+    public function show(string $id):JsonResponse
     {
         $artwork = Artwork::find($id);
 
@@ -50,13 +51,12 @@ class ArtworkController extends Controller
     }
 
 
-    public function update(Request $request, string $id)
+    public function update(ArtworkRequest $request, string $id):JsonResponse
     {
         try {
             $artwork = Artwork::find($id);
             $artwork -> title = $request -> title;
             $artwork -> description = $request -> description;
-            $artwork -> image = $request -> image;
             $artwork -> classification = $request -> classification;
             $artwork -> technique = $request -> technique;
             $artwork -> details = $request -> details;
@@ -73,7 +73,7 @@ class ArtworkController extends Controller
         }
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id):JsonResponse
     {
         try {
             $artwork = Artwork::find($id);

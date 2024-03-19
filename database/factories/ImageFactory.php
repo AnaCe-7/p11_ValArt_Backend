@@ -19,7 +19,6 @@ class ImageFactory extends Factory
         return [
             'image_url' => $this->faker->imageUrl,
             'public_id' => $this->faker->uuid,
-            // 'artwork_id' => \App\Models\Artwork::factory(),
             'artwork_id' => \App\Models\Artwork::all()->random()->id,
         ];
     }
