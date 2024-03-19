@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ArtworkController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +18,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::group([], function(){
+    Route::get('/', [ArtworkController::class, 'index']);
+    Route::post('/artwork', [ArtworkController::class, 'store']);
+    Route::get('/artwork/{id}', [ArtworkController::class, 'show']);
+    Route::put('/artwork/{id}', [ArtworkController::class, 'update']);
+    Route::delete('/artwork/{id}', [ArtworkController::class, 'destroy']);
 });
