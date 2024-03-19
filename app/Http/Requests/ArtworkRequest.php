@@ -25,7 +25,7 @@ class ArtworkRequest extends FormRequest
             'title' => 'required|max:255|min:3',
             'description' => 'required|max:255|min:15',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'classification' => 'required|Pintura,Escultura,Dibujo,Artesanía,Grabado,Ceramica,Orfebreria',
+            'classification' => 'required|in:Pintura,Escultura,Dibujo,Artesanía,Grabado,Ceramica,Orfebreria',
             'technique' => 'required|max:255|min:15',
             'details' => 'nullable|max:255|min:15',
             'measures' => 'required|max:40|min:3',
