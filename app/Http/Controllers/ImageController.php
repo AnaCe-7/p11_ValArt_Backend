@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ImageController extends Controller
 {
@@ -17,33 +19,34 @@ class ImageController extends Controller
 
     public function store(Request $request)
     {
+     
         try {
-            $request->validate([
-                'artwork_id' => 'required|exists:artworks,id',
-                'image' => 'required|image|max:2048',
+            $validator = Validator::make($request->all(), [
+                'image' => 'required|image|max:2048'
             ]);
+            
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
     
-            $image = $request->file('image');
-    
-            // Upload image to Cloudinary
-            $cloudinaryUpload = Cloudinary::upload($image->getRealPath(), [
+            $file = $request->file('image');
+            $cloudinaryUpload = Cloudinary::upload($file->getRealPath(), [
                 'folder' => 'valart',
-                'resource_type' => 'auto'
             ]);
     
-            $imageUrl = $cloudinaryUpload->getSecurePath();
-            $publicId = $cloudinaryUpload->getPublicId();
+            if (!$cloudinaryUpload->getSecurePath() || !$cloudinaryUpload->getPublicId()) {
+                throw new \Exception('No se ha podido almacenar la imagen');
+            }
+            
+            $newImage = Image::create([
+                'artwork_id' => $request->input('artwork_id'),
+                'image_url' => $cloudinaryUpload->getSecurePath(),
+                'public_id' => $cloudinaryUpload->getPublicId(),
+            ]);
     
-            // Create new image record
-            $newImage = new Image();
-            $newImage->artwork_id = $request->artwork_id;
-            $newImage->image_url = $imageUrl;
-            $newImage->public_id = $publicId;
-            $newImage->save();
-    
-            return response()->json(['message' => 'Image uploaded successfully', 'image' => $newImage], 201);
+            return response()->json($newImage, 201);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Image upload failed: ' . $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
