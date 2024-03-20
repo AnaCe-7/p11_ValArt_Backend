@@ -13,8 +13,12 @@ class ImageController extends Controller
     
     public function index()
     {
-        $images = Image::all();
-        return response()->json($images, 200);
+        try {
+            $images = Image::all();
+            return response()->json($images, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function store(Request $request)
@@ -35,7 +39,7 @@ class ImageController extends Controller
             ]);
     
             if (!$cloudinaryUpload->getSecurePath() || !$cloudinaryUpload->getPublicId()) {
-                throw new \Exception('No se ha podido almacenar la imagen');
+                throw new \Exception('The image could not be stored');
             }
             
             $newImage = Image::create([
@@ -49,7 +53,6 @@ class ImageController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
 
     public function show(string $id)
     {
@@ -65,40 +68,38 @@ class ImageController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $image = Image::findOrFail($id);
-    
-            $request->validate([
-                'artwork_id' => 'exists:artworks,id',
-                'image' => 'image|max:2048',
+            $validator = Validator::make($request->all(), [
+                'image' => 'required|image|max:2048'
             ]);
     
-            if ($request->hasFile('image')) {
-                // Upload new image to Cloudinary
-                $imageFile = $request->file('image');
-                $cloudinaryUpload = Cloudinary::upload($imageFile->getRealPath(), [
-                    'folder' => 'valart',
-                    'resource_type' => 'auto'
-                ]);
-                $imageUrl = $cloudinaryUpload->getSecurePath();
-                $publicId = $cloudinaryUpload->getPublicId();
-                
-                // Delete previous image from Cloudinary
-                Cloudinary::destroy($image->public_id);
-                
-                // Update image record
-                $image->image_url = $imageUrl;
-                $image->public_id = $publicId;
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
             }
     
-            if ($request->filled('artwork_id')) {
-                $image->artwork_id = $request->artwork_id;
+            $image = Image::findOrFail($id);
+    
+            // Elimino la imagen anterior de Cloudinary
+            Cloudinary::destroy($image->public_id);
+    
+            // Subo la nueva imagen a Cloudinary
+            $file = $request->file('image');
+            $cloudinaryUpload = Cloudinary::upload($file->getRealPath(), [
+                'folder' => 'valart',
+            ]);
+    
+            if (!$cloudinaryUpload->getSecurePath() || !$cloudinaryUpload->getPublicId()) {
+                throw new \Exception('No se ha podido almacenar la imagen');
             }
     
-            $image->save();
+            // Actualiza los detalles de la imagen en la base de datos
+            $image->update([
+                'image_url' => $cloudinaryUpload->getSecurePath(),
+                'public_id' => $cloudinaryUpload->getPublicId(),
+            ]);
     
-            return response()->json(['message' => 'Image updated successfully', 'image' => $image], 200);
+            return response()->json($image, 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to update image: ' . $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
