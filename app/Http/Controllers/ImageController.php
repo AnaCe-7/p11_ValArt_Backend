@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Image;
 use Illuminate\Http\Request;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ImageController extends Controller
 {
@@ -18,7 +19,34 @@ class ImageController extends Controller
 
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate([
+                'artwork_id' => 'required|exists:artworks,id',
+                'image' => 'required|image|max:2048',
+            ]);
+    
+            $image = $request->file('image');
+    
+            // Upload image to Cloudinary
+            $cloudinaryUpload = Cloudinary::upload($image->getRealPath(), [
+                'folder' => 'valart',
+                'resource_type' => 'auto'
+            ]);
+    
+            $imageUrl = $cloudinaryUpload->getSecurePath();
+            $publicId = $cloudinaryUpload->getPublicId();
+    
+            // Create new image record
+            $newImage = new Image();
+            $newImage->artwork_id = $request->artwork_id;
+            $newImage->image_url = $imageUrl;
+            $newImage->public_id = $publicId;
+            $newImage->save();
+    
+            return response()->json(['message' => 'Image uploaded successfully', 'image' => $newImage], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Image upload failed: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
