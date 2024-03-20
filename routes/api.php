@@ -31,8 +31,8 @@ Route::group([], function(){
 
 Route::group([], function(){
     Route::get('/', [ImageController::class, 'index']);
-    Route::post('/artwork', [ImageController::class, 'store']);
-    Route::get('/artwork/{id}', [ImageController::class, 'show']);
-    Route::put('/artwork/{id}', [ImageController::class, 'update']);
-    Route::delete('/artwork/{id}', [ImageController::class, 'destroy']);
+    Route::post('/image', [ImageController::class, 'store']);
+    Route::get('/image/{id}', [ImageController::class, 'show']);
+    Route::put('/image/{id}', [ImageController::class, 'update']);
+    Route::delete('/image/{id}', [ImageController::class, 'destroy']);
 });
