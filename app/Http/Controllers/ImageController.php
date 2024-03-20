@@ -99,11 +99,21 @@ class ImageController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
+        try {
+            $image = Image::findOrFail($id);
+    
+            // Delete image from Cloudinary
+            Cloudinary::destroy($image->public_id);
+    
+            // Delete image record from database
+            $image->delete();
+    
+            return response()->json(['message' => 'Image deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete image: ' . $e->getMessage()], 500);
+        }
     }
 }
